@@ -34,7 +34,9 @@ job("devops_task6_job2"){
         steps {
         shell('''if sudo kubectl get deployment | grep myweb
 then
-echo " reloading"
+echo "reloading"
+sudo kubectl rollout restart deployment/myweb
+sudo kubectl rollout status deployment/myweb
 else
 sudo kubectl create deployment myweb --image=coolsidd1011/httpd:latest
 sudo kubectl autoscale deployment myweb --min=3 --max=6 --cpu-percent=70
