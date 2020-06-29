@@ -76,8 +76,7 @@ job("devops_task6_job3"){
 then
 echo " All good"
 else
-cd /root/devops_al_task6/
-python3 notifier.py
+python3 /root/notifier.py
 fi
 ''')
       }
