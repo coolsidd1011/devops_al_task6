@@ -1,0 +1,82 @@
+job("devops_task6_job1"){
+        description("will monitor the github")
+        scm {
+                 github('coolsidd1011/devops_al_task6' , 'master')
+             }
+        triggers {
+                scm("* * * * *")
+                
+  	}
+         
+
+
+        steps {
+        shell('''sudo mkdir /root/devops_al_task6
+             sudo cp -rvf * /root/devops_al_task6
+             sudo cd /root/devops_al_task6/''')
+      }
+}
+
+
+job("devops_task6_job2"){
+        description("w"){
+        description("kubernetes jobs")
+        
+        triggers {
+        upstream {
+    upstreamProjects("devops_task6_job1"){
+        description("w")
+    threshold("Fail")
+        }
+        }
+        
+
+        steps {
+        shell('''if sudo kubectl get deployment | grep myweb
+then
+echo " reloading"
+else
+sudo kubectl create deployment myweb --image=coolsidd1011/httpd:latest
+sudo kubectl autoscale deployment myweb --min=3 --max=6 --cpu-percent=70
+fi
+if sudo kubectl get deployment -o wide | grep latest
+then 
+sudo kubectl set image deployment myweb httpd=coolsidd1011/httpd:latest
+else
+sudo kubectl set image deployment myweb httpd=coolsidd1011/httpd:latest
+fi
+if sudo kubectl get service | grep myweb
+then 
+echo "service already exist"
+else
+sudo kubectl expose deployment myweb --port=80 --type=NodePort
+fi ''')
+      }
+}
+
+
+job("devops_task6_job3"){
+        description("w"){
+        description("notifying via mail")
+        
+        triggers {
+                upstream {
+    upstreamProjects("devops_task6_job2"){
+        description("w")
+    threshold("Fail")
+   } 
+        }
+        
+
+
+        steps {
+        shell('''if sudo kubectl get deployment | grep myweb
+then
+echo " All good"
+else
+cd /root/devops_al_task6/
+python3 notifier.py
+fi
+''')
+      }
+}
