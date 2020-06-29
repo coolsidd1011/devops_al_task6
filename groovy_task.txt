@@ -19,40 +19,30 @@ job("devops_task6_job1"){
 
 
 job("devops_task6_job2"){
-        description("w"){
+        description("123"){
         description("kubernetes jobs")
         
         triggers {
         upstream {
     upstreamProjects("devops_task6_job1"){
-        description("w")
+        description("xyz")
     threshold("Fail")
         }
         }
         
 
         steps {
-        shell('''if sudo kubectl get deployment | grep myweb
+        shell('''if sudo kubectl get deployment | grep myhtmlwebdesign
 then
 echo "reloading"
-sudo kubectl rollout restart deployment/myweb
-sudo kubectl rollout status deployment/myweb
+sudo kubectl rollout restart deployment/myhtmlwebdesign
+sudo kubectl rollout status deployment/myhtmlwebdesign
 else
-sudo kubectl create deployment myweb --image=coolsidd1011/httpd:latest
-sudo kubectl autoscale deployment myweb --min=3 --max=6 --cpu-percent=70
-fi
-if sudo kubectl get deployment -o wide | grep latest
-then 
-sudo kubectl set image deployment myweb httpd=coolsidd1011/httpd:latest
-else
-sudo kubectl set image deployment myweb httpd=coolsidd1011/httpd:latest
-fi
-if sudo kubectl get service | grep myweb
-then 
-echo "service already exist"
-else
-sudo kubectl expose deployment myweb --port=80 --type=NodePort
-fi ''')
+kubectl delete all --all
+kubectl delete pvc --all
+sudo kubectl create -f /root/myhtml.yaml
+sudo kubectl autoscale deployment myhtmlwebdesign --min=3 --max=6 --cpu-percent=70
+fi''')
       }
 }
 
@@ -72,7 +62,7 @@ job("devops_task6_job3"){
 
 
         steps {
-        shell('''if sudo kubectl get deployment | grep myweb
+        shell('''if sudo kubectl get deployment | grep myhtmlwebdesign
 then
 echo " All good"
 else
