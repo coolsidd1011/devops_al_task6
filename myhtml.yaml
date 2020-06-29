@@ -1,0 +1,60 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: myhtmlwebdesign
+  labels: 
+    app: myhtmlwebdesign
+    
+spec:
+  selector:
+    matchLabels:
+      app: myhtmlwebdesign
+     
+
+  template:
+    metadata:
+      labels:
+        app: myhtmlwebdesign
+        
+    spec:
+      containers:
+      - image: coolsidd1011/httpd:latest
+        name: myhtmlwebdesign
+        ports:
+        - containerPort: 80
+          name: myhtmlwebdesign
+        volumeMounts:
+        - name: myhtmlwebdesign-ps
+          mountPath: /usr/local/apache2/htdocs/
+      volumes:
+      - name: myhtmlwebdesign-ps
+        persistentVolumeClaim:
+          claimName: myhtmlwebdesign-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myhtmlwebdesign-pvc
+  labels:
+    app: myhtmlwebdesign
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myhtmlwebdesign
+  labels:
+    app: myhtmlwebdesign
+    env: production
+spec:
+  ports:
+    - port: 80
+      nodePort: 30001
+  selector:
+    app: myhtmlwebdesign
+  type: NodePort  
